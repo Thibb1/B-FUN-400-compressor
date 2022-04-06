@@ -1,0 +1,9 @@
+.stack-work/
+.idea
+*~
+*.png
+*.txt
+img2txt
+txt2img
+imageCompressor*
+compress.sh
