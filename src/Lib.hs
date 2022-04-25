@@ -1,12 +1,14 @@
 module Lib where
 
-import Control.Exception (catch)
+import Control.Exception ( catch )
 import System.IO ( stderr, hPutStrLn )
 import System.Exit ( exitWith, ExitCode(ExitFailure) )
+import Text.Read ( readMaybe )
+import Types
 
 -- Read a file and return the contents as a string
-readMaybe :: String -> IO (Maybe String)
-readMaybe file = (Just <$> readFile file) `catch` outputMaybe
+fileMaybe :: String -> IO (Maybe String)
+fileMaybe file = (Just <$> readFile file) `catch` outputMaybe
   where
     outputMaybe :: IOError -> IO (Maybe String)
     outputMaybe _ = return Nothing
@@ -20,28 +22,24 @@ usage = "USAGE: ./imageCompressor -n N -l L -f F\n\n\tN\tnumber of colors in"
   ++ " the final image\n\tL\tconvergence limit\n\tF\tpath to the file "
   ++ "containing the colors of the pixels"
 
---you should read the list of pixels from a file passed as argument, according to the following grammar:
---IN ::= POINT ' ' COLOR ( '\n ' POINT ' ' COLOR ) *
---POINT ::= '( ' int ',' int ') '
---COLOR ::= '( ' SHORT ',' SHORT ',' SHORT ') '
---SHORT ::= '0 '.. '
+-- get the list of pixels from a string
+readPixels :: String -> Maybe [Pixel]
+readPixels str = mapM readPixel (lines $ filter (not . flip elem "()") str)
 
---readPixels :: String -> [(Int, Int, Int)]
---readPixels file =
---    let
---        IN = do
---            point <- readPoint
---            color <- readColor
---            return (point, color)
---        readPoint = do
---            x <- readInt
---            y <- readInt
---            return (x, y)
---        readColor = do
---            r <- readShort
---            g <- readShort
---            b <- readShort
---            return (r, g, b)
---        readShort = do
---            s <- read
---            return (read s :: Int)
+-- get a pixel from a string
+readPixel :: String -> Maybe Pixel
+readPixel str = do
+  case words str of
+    [pos,color] -> do
+      [x,y] <- intList pos
+      [r,g,b] <- intList color
+      return (newPixel (newCoords x y) (newColor r g b))
+    _ -> Nothing
+
+-- get a list of ints from a string comma separated '1,2,3,...'
+intList :: String -> Maybe [Int]
+intList str = sequence (readMaybe <$> stringList str)
+
+-- get a list of strings from a comma separated string
+stringList :: String -> [String]
+stringList str = words [if x == ',' then ' ' else x | x <- str]
