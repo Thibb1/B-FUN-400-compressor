@@ -35,6 +35,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , random
   default-language: Haskell2010
 
 executable compressor-exe
@@ -47,6 +48,7 @@ executable compressor-exe
   build-depends:
       base >=4.7 && <5
     , compressor
+    , random
   default-language: Haskell2010
 
 test-suite compressor-test
@@ -60,4 +62,5 @@ test-suite compressor-test
   build-depends:
       base >=4.7 && <5
     , compressor
+    , random
   default-language: Haskell2010

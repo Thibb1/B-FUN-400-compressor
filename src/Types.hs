@@ -1,6 +1,6 @@
 module Types where
 
-data InputArgs = InputArgs {
+data Options = Options {
   colorNb :: Int, convergence :: Float, path :: String
 }
 
