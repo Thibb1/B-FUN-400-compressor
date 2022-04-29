@@ -32,7 +32,7 @@ readPixel str = do
   case words str of
     [pos,color] -> do
       [x,y] <- intList pos
-      [r,g,b] <- intList color
+      [r,g,b] <- floatList color
       return (newPixel (newCoords x y) (newColor r g b))
     _ -> Nothing
 
@@ -40,6 +40,13 @@ readPixel str = do
 intList :: String -> Maybe [Int]
 intList str = sequence (readMaybe <$> stringList str)
 
+floatList :: String -> Maybe [Float]
+floatList str = sequence (readMaybe <$> stringList str)
+
 -- get a list of strings from a comma separated string
 stringList :: String -> [String]
 stringList str = words [if x == ',' then ' ' else x | x <- str]
+
+-- print a list of strings
+printList :: [String] -> IO ()
+printList = mapM_ putStrLn

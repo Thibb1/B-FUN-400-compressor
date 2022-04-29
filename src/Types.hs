@@ -15,13 +15,14 @@ newCoords :: Int -> Int -> Coords
 newCoords = Coords
 
 data Color = Color {
-  r :: Int, g :: Int, b :: Int
-}
+  r :: Float, g :: Float, b :: Float
+} deriving (Eq)
 
 instance Show Color where
-  show (Color r g b) = "(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
+  show (Color r g b) = "(" ++ show (round r) ++ "," ++ show (round g) ++
+    "," ++ show (round b) ++ ")"
 
-newColor :: Int -> Int -> Int -> Color
+newColor :: Float -> Float -> Float -> Color
 newColor = Color
 
 data Pixel = Pixel {
@@ -44,7 +45,8 @@ data Cluster = Cluster {
 }
 
 instance Show Cluster where
-  show (Cluster color pixels) = "--\n" ++ show color ++ "\n-" ++ unlines (showPixels pixels)
+  show (Cluster color pixels) =
+    "--\n" ++ show color ++ "\n-\n" ++ unlines (showPixels pixels)
 
 showClusters :: [Cluster] -> [String]
 showClusters = map show
